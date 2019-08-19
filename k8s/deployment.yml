@@ -1,0 +1,48 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: news-service
+  labels:
+    app: news-service
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: news-service
+    spec:
+      containers:
+      - name: news-service
+        imagePullPolicy: Always
+        image: ${IMAGE_NAME}:${TAG}
+        ports:
+          - containerPort: 3000
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy:1.14
+        command: ["/cloud_sql_proxy",
+                    "-instances=${INSTANCE_CONNECTION_NAME}=tcp:3306",
+                    "-credential_file=/secrets/cloudsql/sql-admin.json"]
+        securityContext:
+          runAsUser: 2  
+          allowPrivilegeEscalation: false
+        volumeMounts:
+          - name: cloudsql-instance-credentials
+            mountPath: /secrets/cloudsql
+            readOnly: true
+      volumes:
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: news-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: news-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
