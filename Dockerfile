@@ -1,12 +1,12 @@
 FROM golang:latest 
 
-WORKDIR /go/http-sample
-
-COPY app-code .
+WORKDIR /go/sql-example
 
 COPY go.mod go.sum ./
 
 RUN go mod download
+
+COPY main.go . 
 
 RUN go build -o main
 

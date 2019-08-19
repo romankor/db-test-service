@@ -1,4 +1,4 @@
 apiVersion: v1
 description: A Helm chart for Kubernetes
-name: news-service
+name: sql-example
 version: 0.1.0
