@@ -21,6 +21,8 @@ func handleConnectDb(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		panic(err.Error())
+	} else {
+		fmt.Println("Connection OK !")
 	}
 
 	defer db.Close()

@@ -22,6 +22,12 @@ deploy-helm:
 		--set image.repository=${IMAGE_NAME} \
 		--set image.tag=${TAG}
 
+upgrade-helm:
+	helm upgrade ./helm-chart/ n \
+		--set sql.instanceName=$(INSTANCE_CONNECTION_NAME) \
+		--set image.repository=${IMAGE_NAME} \
+		--set image.tag=${TAG} \
+		--debug --recreate-pods 
 
 template-helm:
 	helm template -n n ./helm-chart/ \
